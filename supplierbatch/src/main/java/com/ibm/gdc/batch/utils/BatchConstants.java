@@ -62,4 +62,5 @@ public class BatchConstants {
 	//datastore
      public static final String BATCH_TRACKER_DATASTORE = "batchtracker";
      public static final String BATCH_TRACKER_FILES = "batchattachments";
+     public static final String SUPPLIER_INFO_DATASTORE = "supplierpartneringInfo";
 }
