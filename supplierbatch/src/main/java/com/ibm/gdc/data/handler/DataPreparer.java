@@ -2,29 +2,40 @@ package com.ibm.gdc.data.handler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.ibm.gdc.batch.bean.SuppPartneringInfo;
-import com.ibm.gdc.batch.utils.GDBatchUtils;
 
 public class DataPreparer {
 
 	Logger logger = Logger.getLogger(DataPreparer.class);
+	
+	private static final String VENDOR_ID = "VendorID";
+	private static final String LOCATION_ID = "LocationID";
+	private static final String NAME = "Name";
+	private static final String CITY = "City";
+	private static final String STREET = "Street";
+	private static final String POSTAL_CODE = "PostalCode";
+	private static final String REGION = "Region";
+	private static final String COUNTRY = "Country";
+	private static final String PHONE = "Phone";
+	private static final String FAX = "Fax";
+	private static final String EMAIL_ADDRESS = "EmailAddress";
 
-	public List<SuppPartneringInfo> prepareSuppPartnerInfor(Map<String, List<Object[]>> csvtransformedDataMap){
+	public List<Map<Object,Object>> prepareSuppPartnerInfor(Map<String, List<Object[]>> csvtransformedDataMap){
 		
 		Set<String> set = null;
 		Iterator<String> it = null;
-		List<SuppPartneringInfo> infos = null;
-		SuppPartneringInfo info = null;
+		List<Map<Object,Object>> dataList = null;
+		Map<Object,Object> rowDataMap = null;
 		String key = null;
 		List<Object[]> objs = null;
 		
-		infos = new ArrayList<SuppPartneringInfo>();
+		dataList = new ArrayList<Map<Object,Object>>();
 		
 		if(csvtransformedDataMap!=null && !csvtransformedDataMap.isEmpty()){
 			set = csvtransformedDataMap.keySet();
@@ -36,45 +47,46 @@ public class DataPreparer {
 				
 				if(objs!=null && !objs.isEmpty()){
 					for(Object[] obj : objs){
-						info = new SuppPartneringInfo();
+						rowDataMap = new LinkedHashMap<Object, Object>();
+						
 						if (obj[0] != null)
-							info.setVendorID(String.valueOf(obj[0]));
+							rowDataMap.put(VENDOR_ID, String.valueOf(obj[0]).trim());
 						
 						if (obj[1] != null)
-							info.setLocationID(String.valueOf(obj[1]));
+							rowDataMap.put(LOCATION_ID, String.valueOf(obj[1]).trim());
 						
 						if (obj[2] != null)
-							info.setName(String.valueOf(obj[2]));
+							rowDataMap.put(NAME, String.valueOf(obj[2]).trim());
 						
 						if (obj[3] != null)
-							info.setCity(String.valueOf(obj[3]));
+							rowDataMap.put(CITY, String.valueOf(obj[3]).trim());
 						
 						if (obj[4] != null)
-							info.setStreet(String.valueOf(obj[4]));
+							rowDataMap.put(STREET, String.valueOf(obj[4]).trim());
 						
 						if (obj[5] != null)
-							info.setPostalCode(String.valueOf(obj[5]));
+							rowDataMap.put(POSTAL_CODE, String.valueOf(obj[5]).trim());
 						
 						if (obj[6] != null)
-							info.setRegion(String.valueOf(obj[6]));
+							rowDataMap.put(REGION, String.valueOf(obj[6]).trim());
 						
 						if (obj[7] != null)
-							info.setCountry(String.valueOf(obj[7]));
+							rowDataMap.put(COUNTRY, String.valueOf(obj[7]).trim());
 						
 						if (obj[8] != null)
-							info.setPhone(String.valueOf(obj[8]));
+							rowDataMap.put(PHONE, String.valueOf(obj[8]).trim());
 						
 						if (obj[9] != null)
-							info.setFax(String.valueOf(obj[9]));
+							rowDataMap.put(FAX, String.valueOf(obj[9]).trim());
 						
 						if (obj[10] != null)
-							info.setEmailAddress(String.valueOf(obj[10]));
+							rowDataMap.put(EMAIL_ADDRESS, String.valueOf(obj[10]).trim());
 						
-						infos.add(info);
+						dataList.add(rowDataMap);
 					}
 				}
 			}
 		}
-		return infos;
+		return dataList;
 	}
 }

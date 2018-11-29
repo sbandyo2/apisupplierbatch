@@ -19,7 +19,7 @@ public interface BatchTrackerDAO extends BaseDAO {
 	 * @param supplierData
 	 * @throws BatchException
 	 */
-	public void bulkInsert(List<Map<Object,Object>> supplierData) throws BatchException;
+	public void bulkInsert(List<Map<Object,Object>> supplierData,List<String> colNames) throws BatchException;
 	
 	
 	/**

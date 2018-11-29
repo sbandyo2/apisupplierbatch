@@ -17,4 +17,8 @@
 			<version>2.9.0</version>
 	</dependency>
   </dependencies>
+  
+  <build>
+  	<finalName>supplierbatch</finalName>
+  </build>
 </project>

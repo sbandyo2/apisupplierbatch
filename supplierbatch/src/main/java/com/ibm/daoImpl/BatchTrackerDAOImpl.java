@@ -14,12 +14,18 @@ public class BatchTrackerDAOImpl extends BaseDAOImpl implements BatchTrackerDAO 
 		saveAttachment(BatchConstants.BATCH_TRACKER_FILES, fileName, filecontent);	
 	}
 
-	public void bulkInsert(List<Map<Object, Object>> supplierData)
+	/**
+	 * @param supplierData
+	 * @param colNames
+	 * @throws BatchException
+	 */
+	public void bulkInsert(List<Map<Object, Object>> supplierData,List<String> colNames)
 			throws BatchException {
 		
 		//delete the db
 		deleteDB(BatchConstants.SUPPLIER_INFO_DATASTORE);
 		
+		saveIndex(BatchConstants.SUPPLIER_INFO_DATASTORE, colNames);
 		//persist the data
 		saveWithDB(BatchConstants.SUPPLIER_INFO_DATASTORE, supplierData);
 		

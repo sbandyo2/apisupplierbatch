@@ -1,20 +1,24 @@
 package com.ibm.gdc.batch.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.Timestamp;
+
+
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,11 +36,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.ibm.gdc.batch.dbUtils.DBConstants;
+import com.ibm.vo.BatchTrackerVO;
+import com.ibm.dao.BatchTrackerDAO;
+import com.ibm.daoImpl.BatchTrackerDAOImpl;
 
 
 public class GDBatchUtils {
 
 	private static final String CONFIG_FILE = "batch_config.properties";
+	private static final String CONNECTION_FILE = "conn_config.properties";
 	private  Map<String, String> xmlMap = null;
 	
 	private  Map<String, Map<String, String>> connMap = null;
@@ -53,7 +61,7 @@ public class GDBatchUtils {
 		properties = new Properties();
 		InputStream inputStream = null;
 
-		inputStream = GDBatchUtils.class.getClassLoader().getResourceAsStream(CONFIG_FILE);
+		inputStream = GDBatchUtils.class.getClassLoader().getResourceAsStream(CONNECTION_FILE);
 
 		if (inputStream != null)
 			properties.load(inputStream);
@@ -363,64 +371,59 @@ public class GDBatchUtils {
 	 * @param processFiles
 	 * @throws BatchException
 	 */
-	public static void archiveAndDelete(List<File> processFiles) throws BatchException {
+	public static Long archiveAndDelete(List<File> processFiles) throws BatchException {
 
-        ZipOutputStream zipOutputStream = null;       
+		BatchTrackerDAO batchDAO = null;       
         String fName = null;
         String name = null;
         String extension = null;
-        String doneDir = null;
+        Long rowCount = null;
+        
         try {            
         	
 			extension = GDBatchUtils.getValue(BatchConstants.FILE_EXT);
-			doneDir = GDBatchUtils.getValue(BatchConstants.DONE_DIR);
-        	//make done directory
-        	makeDir(doneDir);
-        	
-            // Iterating the list of file(s) to zip/compress
+			        	
+            // Iterating the list of file(s) to save
             for (File file : processFiles) {
             	
             	fName = file.getName();
 				name = fName.substring(	0,fName.indexOf(BatchConstants.DOT+ extension));
             	
-            	// Creating the zipOutputStream instance
-                zipOutputStream = new ZipOutputStream(new FileOutputStream(doneDir+BatchConstants.DOUBLE_BACKSLASH+name+BatchConstants.ZIP));
-                
-                // Adding the file(s) to the zip
-				ZipEntry zipEntry = new ZipEntry(name + BatchConstants.DOT+ extension);
-                zipOutputStream.putNextEntry(zipEntry);
                 FileInputStream fileInputStream = new FileInputStream(file);
+                BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
+                StringBuffer sb = new StringBuffer();
                 
-                int length;
-                byte[] buffer = new byte[1024];
-                while ((length = fileInputStream.read(buffer)) > 0) {
-                    zipOutputStream.write(buffer, 0, length);
-                }                
+                String line;
+                rowCount = Long.valueOf("0");
+                while(( line = br.readLine()) != null ) {
+                   sb.append( line );
+                   sb.append( System.lineSeparator() );
+                   rowCount++;
+                }
+                
+                              
                 // Closing the fileInputStream instance
+                br.close();
                 fileInputStream.close();
                 // De-allocating the memory by assigning the null value
                 fileInputStream = null;
                 
-                //closing the streams
-                zipOutputStream.closeEntry();
-                zipOutputStream.close();
+                batchDAO = new BatchTrackerDAOImpl();
                 
-                //delete the file after archival
+                //Save attachment.
+                batchDAO.saveAttachment(name, sb);
+                 
+                //delete the file after saving in db
                 deleteFile(file.getPath());
                 
             }
         } catch (IOException iOException) {
             throw new BatchException(iOException);
         } finally {
-            // Validating if zipOutputStream instance in not null
-            if (zipOutputStream != null) {
-                try {
-                    zipOutputStream.closeEntry();
-                    zipOutputStream.close();
-                } catch (IOException iOException) {
-                }
-            }
+        	
         }
+        
+        return rowCount;
     }
 	
 	
@@ -429,47 +432,45 @@ public class GDBatchUtils {
 	 * @throws BatchException
 	 */
 	public static void archiveAndDeleteForError(List<File> processFiles) throws BatchException {
-
-        ZipOutputStream zipOutputStream = null;       
+       
+        BatchTrackerDAO batchDAO = null;
         String fName = null;
         String name = null;
         String extension = null;
-        String invalidDir = null;
+        Long rowCount = null;
         try {            
         	
 			extension = GDBatchUtils.getValue(BatchConstants.FILE_EXT);
-			invalidDir = GDBatchUtils.getValue(BatchConstants.INVALID_DIR);
-        	//make done directory
-        	makeDir(invalidDir);
-        	
+			        	
             // Iterating the list of file(s) to zip/compress
             for (File file : processFiles) {
             	
             	fName = file.getName();
 				name = fName.substring(	0,fName.indexOf(BatchConstants.DOT+ extension));
             	
-            	// Creating the zipOutputStream instance
-                zipOutputStream = new ZipOutputStream(new FileOutputStream(invalidDir+BatchConstants.DOUBLE_BACKSLASH+name+BatchConstants.ZIP));
+            	FileInputStream fileInputStream = new FileInputStream(file);
+            	BufferedReader br = new BufferedReader(new InputStreamReader(fileInputStream));
+                StringBuffer sb = new StringBuffer();
                 
-                // Adding the file(s) to the zip
-				ZipEntry zipEntry = new ZipEntry(name + BatchConstants.DOT+ extension);
-                zipOutputStream.putNextEntry(zipEntry);
-                FileInputStream fileInputStream = new FileInputStream(file);
-                
-                int length;
-                byte[] buffer = new byte[1024];
-                while ((length = fileInputStream.read(buffer)) > 0) {
-                    zipOutputStream.write(buffer, 0, length);
-                }                
+                String line;
+                rowCount = Long.valueOf("0");
+                while(( line = br.readLine()) != null ) {
+                   sb.append( line );
+                   sb.append( System.lineSeparator() );
+                   rowCount++;
+                }
+                              
                 // Closing the fileInputStream instance
+                br.close();
                 fileInputStream.close();
                 // De-allocating the memory by assigning the null value
                 fileInputStream = null;
                 
-                //closing the streams
-                zipOutputStream.closeEntry();
-                zipOutputStream.close();
+                batchDAO = new BatchTrackerDAOImpl();
                 
+                //Save attachment.
+                batchDAO.saveAttachment(name, sb);
+                               
                 //delete the file after archival
                 deleteFile(file.getPath());
                 
@@ -477,14 +478,7 @@ public class GDBatchUtils {
         } catch (IOException iOException) {
             throw new BatchException(iOException);
         } finally {
-            // Validating if zipOutputStream instance in not null
-            if (zipOutputStream != null) {
-                try {
-                    zipOutputStream.closeEntry();
-                    zipOutputStream.close();
-                } catch (IOException iOException) {
-                }
-            }
+        	
         }
     }
 
