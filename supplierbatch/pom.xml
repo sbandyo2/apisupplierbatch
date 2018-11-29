@@ -42,7 +42,7 @@
 							<mainClass>com.ibm.gdc.entry.EntryPoint</mainClass>
 						</manifest>
 					</archive>
-					<finalName></finalName>
+					<finalName>supplierbatch</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
