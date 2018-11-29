@@ -20,6 +20,24 @@
  
   <build>
   <plugins>
+  	<plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+           
+          </descriptorRefs>
+        <finalName>supplierbatch</finalName>
+        </configuration>
+      </plugin>
     <plugin>
       <!-- Build an executable JAR -->
       <groupId>org.apache.maven.plugins</groupId>
@@ -37,6 +55,6 @@
     </plugin>
   </plugins>
   
-  <finalName>supplierbatch</finalName>
+  
 </build>
 </project>
