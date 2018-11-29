@@ -1,60 +1,52 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.ibm</groupId>
-  <artifactId>supplierbatch</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  <dependencies>
-  	<!-- https://mvnrepository.com/artifact/log4j/log4j -->
-	<dependency>
-	    <groupId>log4j</groupId>
-	    <artifactId>log4j</artifactId>
-	    <version>1.2.11</version>
-	</dependency>
-	<dependency>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ibm</groupId>
+	<artifactId>supplierbatch</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.11</version>
+		</dependency>
+		<dependency>
 			<groupId>com.cloudant</groupId>
 			<artifactId>cloudant-client</artifactId>
 			<version>2.9.0</version>
-	</dependency>
-  </dependencies>
- 
-  <build>
-  <plugins>
-  	<plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-           
-          </descriptorRefs>
-        <finalName>supplierbatch</finalName>
-        </configuration>
-      </plugin>
-    <plugin>
-      <!-- Build an executable JAR -->
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-jar-plugin</artifactId>
-      <version>3.1.0</version>
-      <configuration>
-        <archive>
-          <manifest>
-           <!--  <addClasspath>true</addClasspath>
-            <classpathPrefix>lib/</classpathPrefix> -->
-            <mainClass>com.ibm.gdc.entry.EntryPoint</mainClass>
-          </manifest>
-        </archive>
-      </configuration>
-    </plugin>
-  </plugins>
-  
-  
-</build>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<!-- <addClasspath>true</addClasspath> <classpathPrefix>lib/</classpathPrefix> -->
+							<mainClass>com.ibm.gdc.entry.EntryPoint</mainClass>
+						</manifest>
+					</archive>
+					<finalName></finalName>
+				</configuration>
+			</plugin>
+		</plugins>
+
+
+	</build>
 </project>
