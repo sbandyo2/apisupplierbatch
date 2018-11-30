@@ -12,12 +12,14 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 
 
 import javax.xml.parsers.DocumentBuilder;
@@ -69,6 +71,11 @@ public class GDBatchUtils {
 			value = properties.getProperty(key);
 
 		return value;
+	}
+	
+	public static String  getDate(){
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		return df.format(new Date());
 	}
 	
 	/**

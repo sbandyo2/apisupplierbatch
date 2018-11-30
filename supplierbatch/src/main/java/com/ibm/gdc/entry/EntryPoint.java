@@ -110,15 +110,14 @@ public class EntryPoint {
 	 */
 	private static void saveTrakInfo(BatchTrackerDAO batchDAO, String status, String fileName, long count) {
 		BatchTrackerVO batchTrackerVO = null;
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-		String formatted = df.format(new Date());
+		
 		
 		try {
 			batchTrackerVO = new BatchTrackerVO();
 			batchTrackerVO.setFileName(fileName);
 			batchTrackerVO.setRecordCount(count);
 			batchTrackerVO.setStatus(status);
-			batchTrackerVO.setDate(formatted);
+			batchTrackerVO.setDate(GDBatchUtils.getDate());
 			batchTrackerVO.setDateTs(Instant.now().toString());	
 			
 			batchDAO.saveTrackingInfo(batchTrackerVO);
